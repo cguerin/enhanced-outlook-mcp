@@ -1,7 +1,7 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
-const { buildQueryParams } = require('../utils/odata-helpers');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
+import { buildQueryParams } from '../utils/odata-helpers.js';
 
 /**
  * Search emails across mailbox
@@ -30,11 +30,12 @@ async function searchEmailsHandler(params = {}) {
     const graphClient = new GraphApiClient(userId);
     
     // Build query parameters
+    // Note: Microsoft Graph doesn't support $orderBy with $search
     const queryParams = buildQueryParams({
       select: params.fields || config.email.defaultFields,
       top: limit,
-      search: query,
-      orderBy: params.orderBy || { receivedDateTime: 'desc' }
+      search: query
+      // orderBy is not supported with search
     });
     
     // Perform email search
@@ -173,6 +174,6 @@ async function populateFolderNames(graphClient, folderGroups) {
   }
 }
 
-module.exports = {
+export {
   searchEmailsHandler
 };

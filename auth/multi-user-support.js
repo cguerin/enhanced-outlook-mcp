@@ -1,5 +1,5 @@
 // auth/multi-user-support.js
-const crypto = require('crypto');
+import crypto from 'crypto';
 const userSessions = new Map();
 
 function generateUserId() {
@@ -19,4 +19,4 @@ function getUserSession(userId) {
   return null;
 }
 
-module.exports = { generateUserId, storeUserSession, getUserSession };
+export { generateUserId, storeUserSession, getUserSession };

@@ -1,7 +1,7 @@
-const { listEventsHandler, getEventHandler, listCalendarsHandler } = require('./list-events');
-const { createEventHandler } = require('./create-event');
-const { updateEventHandler, respondToEventHandler } = require('./update-event');
-const { deleteEventHandler, cancelEventHandler, findMeetingTimesHandler } = require('./delete-event');
+import { listEventsHandler, getEventHandler, listCalendarsHandler } from './list-events.js';
+import { createEventHandler } from './create-event.js';
+import { updateEventHandler, respondToEventHandler } from './update-event.js';
+import { deleteEventHandler, cancelEventHandler, findMeetingTimesHandler } from './delete-event.js';
 
 // Calendar tool definitions
 const calendarTools = [
@@ -377,4 +377,4 @@ const calendarTools = [
   }
 ];
 
-module.exports = calendarTools;
+export default calendarTools;

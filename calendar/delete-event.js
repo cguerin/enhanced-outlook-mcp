@@ -1,6 +1,6 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
 
 /**
  * Delete a calendar event
@@ -230,7 +230,7 @@ function formatAttendees(attendees) {
   });
 }
 
-module.exports = {
+export {
   deleteEventHandler,
   cancelEventHandler,
   findMeetingTimesHandler

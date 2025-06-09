@@ -1,6 +1,6 @@
-const { listFoldersHandler, getFolderHandler } = require('./list');
-const { createFolderHandler, updateFolderHandler, deleteFolderHandler } = require('./create');
-const { moveEmailsHandler, moveFolderHandler, copyEmailsHandler } = require('./move');
+import { listFoldersHandler, getFolderHandler } from './list.js';
+import { createFolderHandler, updateFolderHandler, deleteFolderHandler } from './create.js';
+import { moveEmailsHandler, moveFolderHandler, copyEmailsHandler } from './move.js';
 
 // Folder tool definitions
 const folderTools = [
@@ -200,4 +200,4 @@ const folderTools = [
   }
 ];
 
-module.exports = folderTools;
+export default folderTools;

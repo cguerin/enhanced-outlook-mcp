@@ -1,6 +1,6 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
 
 /**
  * Move emails to a folder
@@ -274,7 +274,7 @@ async function copyEmailsHandler(params = {}) {
   }
 }
 
-module.exports = {
+export {
   moveEmailsHandler,
   moveFolderHandler,
   copyEmailsHandler

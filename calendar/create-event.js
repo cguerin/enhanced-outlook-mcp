@@ -1,6 +1,6 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
 
 /**
  * Create a new calendar event
@@ -213,6 +213,6 @@ function formatAttendees(attendees) {
   });
 }
 
-module.exports = {
+export {
   createEventHandler
 };

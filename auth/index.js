@@ -1,9 +1,9 @@
-const { 
+import { 
   authenticateHandler,
   checkAuthStatusHandler,
   revokeAuthenticationHandler,
   listAuthenticatedUsersHandler
-} = require('./tools');
+} from './tools.js';
 
 // Authentication tool definitions
 const authTools = [
@@ -62,4 +62,4 @@ const authTools = [
   }
 ];
 
-module.exports = authTools;
+export default authTools;

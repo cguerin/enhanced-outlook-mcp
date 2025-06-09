@@ -1,8 +1,8 @@
-const axios = require('axios');
-const config = require('../config');
-const logger = require('./logger');
-const { getToken } = require('../auth/token-manager');
-const { rateLimiter } = require('./rate-limiter');
+import axios from 'axios';
+import config from '../config.js';
+import logger from './logger.js';
+import { getToken } from '../auth/token-manager.js';
+import { rateLimiter } from './rate-limiter.js';
 
 /**
  * Microsoft Graph API client wrapper
@@ -238,4 +238,4 @@ class GraphApiClient {
   }
 }
 
-module.exports = { GraphApiClient };
+export { GraphApiClient };

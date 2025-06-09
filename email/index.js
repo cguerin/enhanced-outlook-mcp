@@ -1,18 +1,18 @@
-const { listEmailsHandler } = require('./list');
-const { searchEmailsHandler } = require('./search');
-const { readEmailHandler, markEmailHandler } = require('./read');
-const { 
+import { listEmailsHandler } from './list.js';
+import { searchEmailsHandler } from './search.js';
+import { readEmailHandler, markEmailHandler } from './read.js';
+import { 
   sendEmailHandler, 
   createDraftHandler, 
   replyEmailHandler, 
   forwardEmailHandler 
-} = require('./send');
-const { 
+} from './send.js';
+import { 
   getAttachmentHandler, 
   listAttachmentsHandler, 
   addAttachmentHandler, 
   deleteAttachmentHandler 
-} = require('./attachments');
+} from './attachments.js';
 
 // Email tool definitions
 const emailTools = [
@@ -407,4 +407,4 @@ const emailTools = [
   }
 ];
 
-module.exports = emailTools;
+export default emailTools;

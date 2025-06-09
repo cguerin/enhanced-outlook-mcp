@@ -1,5 +1,5 @@
-const winston = require('winston');
-const config = require('../config');
+import winston from 'winston';
+import config from '../config.js';
 
 // Create a custom format that includes timestamp, level, and message
 const customFormat = winston.format.combine(
@@ -20,13 +20,6 @@ const logger = winston.createLogger({
   level: config.server.logLevel,
   format: customFormat,
   transports: [
-    // Console transport
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        customFormat
-      )
-    }),
     // File transport for errors and above
     new winston.transports.File({ 
       filename: 'error.log', 
@@ -44,4 +37,4 @@ logger.logWithData = (level, message, data) => {
   logger.log(level, message, { data });
 };
 
-module.exports = logger;
+export default logger;

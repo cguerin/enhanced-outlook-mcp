@@ -218,7 +218,7 @@ function buildQueryParams(options = {}) {
   return params;
 }
 
-module.exports = {
+export {
   escapeODataString,
   formatODataValue,
   buildFilter,

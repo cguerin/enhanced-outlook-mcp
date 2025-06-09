@@ -1,6 +1,6 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
 
 /**
  * Get attachment content from an email
@@ -260,7 +260,7 @@ async function deleteAttachmentHandler(params = {}) {
   }
 }
 
-module.exports = {
+export {
   getAttachmentHandler,
   listAttachmentsHandler,
   addAttachmentHandler,

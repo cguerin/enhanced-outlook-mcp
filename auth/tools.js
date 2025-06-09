@@ -1,7 +1,7 @@
-const axios = require('axios');
-const config = require('../config');
-const logger = require('../utils/logger');
-const { saveToken, deleteToken, listUsers } = require('./token-manager');
+import axios from 'axios';
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { saveToken, deleteToken, listUsers } from './token-manager.js';
 
 /**
  * Tool handler for authenticating with Microsoft Graph API
@@ -14,15 +14,28 @@ async function authenticateHandler(params = {}) {
   try {
     logger.info('Starting authentication flow');
     
+    // Check if clientId is configured
+    if (!config.microsoft.clientId) {
+      throw new Error('MS_CLIENT_ID environment variable is not configured. Please set it in your .env file.');
+    }
+    
     // Prepare authentication request
     const authRequest = {
       clientId: config.microsoft.clientId,
       scopes: params.scopes || config.microsoft.scopes,
       redirectUri: config.microsoft.redirectUri,
-      state: params.userId || 'default'
+      state: params.userId || 'mcp-user'
     };
     
+    logger.info('Authentication request:', { 
+      clientId: authRequest.clientId ? 'configured' : 'missing',
+      scopesCount: authRequest.scopes.length,
+      redirectUri: authRequest.redirectUri,
+      state: authRequest.state
+    });
+    
     // Request authentication URL from auth server
+    logger.info(`Sending request to ${authServerUrl}/auth/start`);
     const response = await axios.post(`${authServerUrl}/auth/start`, authRequest);
     
     // Check if authentication was initiated successfully
@@ -47,10 +60,17 @@ async function authenticateHandler(params = {}) {
   } catch (error) {
     logger.error(`Authentication error: ${error.message}`);
     
+    // Log more detailed error information
+    if (error.response) {
+      logger.error('Error response data:', error.response.data);
+      logger.error('Error response status:', error.response.status);
+    }
+    
     // Return error response
     return {
       status: 'error',
       message: `Authentication failed: ${error.message}`,
+      details: error.response?.data || null,
       instruction: 'Please try again. If the problem persists, check server logs for more details.'
     };
   }
@@ -62,20 +82,35 @@ async function authenticateHandler(params = {}) {
  * @returns {Promise<Object>} - Authentication status
  */
 async function checkAuthStatusHandler(params = {}) {
-  const authServerUrl = `http://localhost:${config.server.authPort}`;
-  
   try {
-    // Request authentication status from auth server
-    const response = await axios.get(`${authServerUrl}/auth/status`);
+    // Check stored tokens instead of auth server state
+    const users = await listUsers();
     
+    if (users.length === 0) {
+      return {
+        status: 'not_authenticated',
+        isAuthenticating: false,
+        userId: null,
+        instruction: 'Not authenticated. Please use the authenticate tool to start the authentication process.'
+      };
+    }
+    
+    // For single user scenario, report as authenticated
+    if (users.length === 1) {
+      return {
+        status: 'authenticated',
+        isAuthenticating: false,
+        userId: users[0],
+        instruction: `Authenticated as ${users[0]}. You can now use other tools that require authentication.`
+      };
+    }
+    
+    // Multiple users
     return {
-      ...response.data,
-      // Add clear instructions based on status
-      instruction: response.data.isAuthenticating 
-        ? 'Authentication in progress. Please complete the authentication in your browser.'
-        : response.data.userId
-          ? 'You are authenticated. You can now use other tools that require authentication.'
-          : 'Not authenticated. Please use the authenticate tool to start the authentication process.'
+      status: 'authenticated',
+      isAuthenticating: false,
+      users: users,
+      instruction: `Multiple users authenticated: ${users.join(', ')}. Tools will use ${users[0]} by default.`
     };
   } catch (error) {
     logger.error(`Check auth status error: ${error.message}`);
@@ -157,7 +192,7 @@ async function listAuthenticatedUsersHandler() {
   }
 }
 
-module.exports = {
+export {
   authenticateHandler,
   checkAuthStatusHandler,
   revokeAuthenticationHandler,

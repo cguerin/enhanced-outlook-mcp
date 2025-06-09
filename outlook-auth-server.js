@@ -1,21 +1,22 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const http = require('http');
-const socketIo = require('socket.io');
-const open = require('open');
-const config = require('./config');
-const logger = require('./utils/logger');
-const { saveToken } = require('./auth/token-manager');
+import express from 'express';
+import bodyParser from 'body-parser';
+import http from 'http';
+import { Server as SocketIoServer } from 'socket.io';
+import open from 'open';
+import config from './config.js';
+import logger from './utils/logger.js';
+import { saveToken } from './auth/token-manager.js';
 
 // Create Express app
 const app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Create HTTP server
 const server = http.createServer(app);
 
 // Set up Socket.IO for real-time status updates
-const io = socketIo(server, {
+const io = new SocketIoServer(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST']
@@ -122,12 +123,28 @@ app.get('/auth/callback', async (req, res) => {
 
 // Initiate authentication endpoint
 app.post('/auth/start', async (req, res) => {
+  logger.info('Raw request body:', req.body);
+  
   const { clientId, scopes, redirectUri, state = 'default' } = req.body;
+  
+  logger.info('Received authentication request:', {
+    clientId: clientId ? 'provided' : 'missing',
+    scopes: scopes ? `${scopes.length} scopes` : 'missing',
+    redirectUri: redirectUri || 'missing',
+    state: state,
+    actualClientId: clientId
+  });
   
   // Validate required parameters
   if (!clientId || !scopes || !redirectUri) {
+    const missingParams = [];
+    if (!clientId) missingParams.push('clientId');
+    if (!scopes) missingParams.push('scopes');
+    if (!redirectUri) missingParams.push('redirectUri');
+    
     return res.status(400).json({
-      error: 'Missing required authentication parameters'
+      error: 'Missing required authentication parameters',
+      missing: missingParams
     });
   }
   
@@ -195,7 +212,8 @@ async function exchangeCodeForToken(code, state) {
   const userId = 'mock_user_id'; // Would be extracted from the decoded ID token
   
   // Save the token using the token manager
-  await saveToken(userId, mockTokenResponse);
+  // DISABLED: Mock tokens should not be saved
+  // await saveToken(userId, mockTokenResponse);
   
   return { userId };
 }

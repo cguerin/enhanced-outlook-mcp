@@ -1,8 +1,8 @@
-const fs = require('fs').promises;
-const path = require('path');
-const axios = require('axios');
-const config = require('../config');
-const logger = require('../utils/logger');
+import { promises as fs } from 'fs';
+import path from 'path';
+import axios from 'axios';
+import config from '../config.js';
+import logger from '../utils/logger.js';
 
 // Token storage path
 const TOKEN_STORAGE_PATH = config.server.tokenStoragePath;
@@ -55,11 +55,31 @@ async function saveTokenStorage(tokenData) {
  * @returns {Promise<Object|null>} - Token data or null if not found
  */
 async function getToken(userId) {
-  if (!userId) {
-    throw new Error('User ID is required');
+  const tokenStorage = await getTokenStorage();
+  
+  // If no userId provided or userId is 'default', try to find a suitable user
+  if (!userId || userId === 'default') {
+    // First check if there's a token stored under 'default'
+    if (tokenStorage['default']) {
+      userId = 'default';
+    } else {
+      // Otherwise, use the first available user
+      const users = Object.keys(tokenStorage);
+      if (users.length === 1) {
+        // Single user scenario - use that user
+        userId = users[0];
+        logger.info(`No userId specified, using single authenticated user: ${userId}`);
+      } else if (users.length > 1) {
+        // Multiple users - still try to use the first one but warn
+        userId = users[0];
+        logger.warn(`Multiple users authenticated but no userId specified. Using: ${userId}`);
+      } else {
+        // No users authenticated
+        return null;
+      }
+    }
   }
   
-  const tokenStorage = await getTokenStorage();
   const tokenData = tokenStorage[userId];
   
   if (!tokenData) {
@@ -105,6 +125,7 @@ async function refreshToken(userId, refreshToken) {
       'https://login.microsoftonline.com/common/oauth2/v2.0/token',
       new URLSearchParams({
         client_id: config.microsoft.clientId,
+        client_secret: process.env.MS_CLIENT_SECRET || '',
         scope: config.microsoft.scopes.join(' '),
         refresh_token: refreshToken,
         grant_type: 'refresh_token'
@@ -216,7 +237,7 @@ async function listUsers() {
   return Object.keys(tokenStorage);
 }
 
-module.exports = {
+export {
   getToken,
   saveToken,
   refreshToken,

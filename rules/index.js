@@ -1,5 +1,5 @@
-const { listRulesHandler, getRuleHandler } = require('./list');
-const { createRuleHandler, updateRuleHandler, deleteRuleHandler } = require('./create');
+import { listRulesHandler, getRuleHandler } from './list.js';
+import { createRuleHandler, updateRuleHandler, deleteRuleHandler } from './create.js';
 
 // Rule tool definitions
 const ruleTools = [
@@ -134,4 +134,4 @@ const ruleTools = [
   }
 ];
 
-module.exports = ruleTools;
+export default ruleTools;

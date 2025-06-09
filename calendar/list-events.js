@@ -1,7 +1,7 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
-const { buildQueryParams } = require('../utils/odata-helpers');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
+import { buildQueryParams } from '../utils/odata-helpers.js';
 
 /**
  * List calendar events
@@ -237,7 +237,7 @@ function formatEventResponse(event) {
   };
 }
 
-module.exports = {
+export {
   listEventsHandler,
   getEventHandler,
   listCalendarsHandler

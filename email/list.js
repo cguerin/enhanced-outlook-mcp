@@ -1,7 +1,7 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
-const { buildQueryParams } = require('../utils/odata-helpers');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
+import { buildQueryParams } from '../utils/odata-helpers.js';
 
 /**
  * List emails from a mailbox
@@ -36,14 +36,21 @@ async function listEmailsHandler(params = {}) {
     }
     
     // Build query parameters
-    const queryParams = buildQueryParams({
+    // Note: Microsoft Graph doesn't support $orderBy with $search
+    const queryParamsObj = {
       select: params.fields || config.email.defaultFields,
       top: limit,
       filter: params.filter,
-      orderBy: params.orderBy || { receivedDateTime: 'desc' },
       skip: params.skip || 0,
       search: params.search
-    });
+    };
+    
+    // Only add orderBy if we're not using search
+    if (!params.search) {
+      queryParamsObj.orderBy = params.orderBy || { receivedDateTime: 'desc' };
+    }
+    
+    const queryParams = buildQueryParams(queryParamsObj);
     
     // Get emails
     const emails = await graphClient.getPaginated(endpoint, queryParams, {
@@ -119,6 +126,6 @@ function formatEmailResponse(email) {
   };
 }
 
-module.exports = {
+export {
   listEmailsHandler
 };

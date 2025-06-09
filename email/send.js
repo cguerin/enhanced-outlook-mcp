@@ -1,6 +1,6 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
 
 /**
  * Send a new email
@@ -9,6 +9,9 @@ const { GraphApiClient } = require('../utils/graph-api');
  */
 async function sendEmailHandler(params = {}) {
   const userId = params.userId || 'default';
+  
+  // Log the received parameters for debugging
+  logger.info('Send email params received:', JSON.stringify(params));
   
   // Check required parameters
   if (!params.subject) {
@@ -314,7 +317,7 @@ function formatRecipients(recipients) {
   });
 }
 
-module.exports = {
+export {
   sendEmailHandler,
   createDraftHandler,
   replyEmailHandler,

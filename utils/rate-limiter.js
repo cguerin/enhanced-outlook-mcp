@@ -1,6 +1,6 @@
-const NodeCache = require('node-cache');
-const config = require('../config');
-const logger = require('./logger');
+import NodeCache from 'node-cache';
+import config from '../config.js';
+import logger from './logger.js';
 
 class RateLimiter {
   constructor(options = {}) {
@@ -83,4 +83,4 @@ class RateLimiter {
 // Create a singleton instance
 const rateLimiter = new RateLimiter();
 
-module.exports = { rateLimiter };
+export { rateLimiter };

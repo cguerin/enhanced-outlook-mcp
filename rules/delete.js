@@ -1,5 +1,5 @@
 // rules/delete.js
-const { GraphApiClient } = require('../utils/graph-api');
+import { GraphApiClient } from '../utils/graph-api.js';
 
 async function deleteRuleHandler(params = {}) {
   const { userId = 'default', ruleId } = params;
@@ -14,4 +14,4 @@ async function deleteRuleHandler(params = {}) {
   }
 }
 
-module.exports = { deleteRuleHandler };
+export { deleteRuleHandler };

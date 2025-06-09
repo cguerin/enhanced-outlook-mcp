@@ -1,6 +1,6 @@
-const config = require('../config');
-const logger = require('../utils/logger');
-const { GraphApiClient } = require('../utils/graph-api');
+import config from '../config.js';
+import logger from '../utils/logger.js';
+import { GraphApiClient } from '../utils/graph-api.js';
 
 /**
  * Update an existing calendar event
@@ -278,7 +278,7 @@ function getResponseText(response) {
   }
 }
 
-module.exports = {
+export {
   updateEventHandler,
   respondToEventHandler
 };
